@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Manage Treks - TrekManager{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-start">
+    <div>
+        <h2>Treks</h2>
+        <p>Create, edit, and manage all trekking routes</p>
+    </div>
+    <a href="{{ url_for('admin_add_trek') }}" class="btn btn-orange">Add Trek</a>
+</div>
+
+<div class="search-bar">
+    <form method="GET" class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label form-label-small">Search</label>
+            <input type="text" name="search" class="form-control" placeholder="Search by name, location, or ID" value="{{ search }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ url_for('admin_treks') }}" class="btn btn-outline-secondary w-100">Clear</a>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="card-body-pad p-0">
+        {% if treks %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Difficulty</th>
+                    <th>Duration</th>
+                    <th>Slots</th>
+                    <th>Assigned Staff</th>
+                    <th>Status</th>
+                    <th>Start Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trek in treks %}
+                <tr>
+                    <td>#{{ trek.id }}</td>
+                    <td><strong>{{ trek.name }}</strong></td>
+                    <td>{{ trek.location }}</td>
+                    <td>
+                        <span class="status-badge badge-difficulty-{{ trek.difficulty | lower }}">
+                            {{ trek.difficulty }}
+                        </span>
+                    </td>
+                    <td>{{ trek.duration }}d</td>
+                    <td>{{ trek.available_slots }} / {{ trek.total_slots }}</td>
+                    <td>{{ trek.staff_name or '—' }}</td>
+                    <td><span class="status-badge status-{{ trek.status | lower }}">{{ trek.status }}</span></td>
+                    <td>{{ trek.start_date or '—' }}</td>
+                    <td class="action-btns">
+                        <a href="{{ url_for('admin_edit_trek', id=trek.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{ url_for('admin_delete_trek', id=trek.id) }}" class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete this trek and all its bookings?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state"><p>No treks found. <a href="{{ url_for('admin_add_trek') }}">Add the first trek.</a></p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

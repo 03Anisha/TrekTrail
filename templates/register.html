@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Register - TrekManager{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-box">
+        <div class="auth-title">Create Account</div>
+        <div class="auth-subtitle">Register as a Trekker or Trek Staff</div>
+
+        <form method="POST" novalidate>
+            <div class="mb-3">
+                <label class="form-label">Register As</label>
+                <select name="role" id="roleSelect" class="form-select" required>
+                    <option value="user">Trekker (User)</option>
+                    <option value="staff">Trek Staff</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Your full name" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Choose a strong password" required minlength="6">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phone Number</label>
+                <input type="text" name="phone" class="form-control" placeholder="Contact number">
+            </div>
+
+            <div id="userFields">
+                <div class="mb-3">
+                    <label class="form-label">Emergency Contact</label>
+                    <input type="text" name="emergency_contact" class="form-control" placeholder="Emergency contact number">
+                </div>
+            </div>
+
+            <div id="staffFields">
+                <div class="mb-3">
+                    <label class="form-label">Experience</label>
+                    <textarea name="experience" class="form-control" rows="2" placeholder="Briefly describe your trekking experience"></textarea>
+                </div>
+                <div class="mb-3">
+                    <div class="alert alert-warning py-2 px-3 text-muted-small">
+                        Staff accounts require admin approval before login access is granted.
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-orange w-100">Register</button>
+        </form>
+
+        <div class="auth-divider">Already have an account?</div>
+        <a href="{{ url_for('login') }}" class="btn btn-outline-secondary w-100">Sign In</a>
+    </div>
+</div>
+
+<script>
+document.getElementById('roleSelect').addEventListener('change', function() {
+    var role = this.value;
+    document.getElementById('userFields').style.display  = role === 'user'  ? 'block' : 'none';
+    document.getElementById('staffFields').style.display = role === 'staff' ? 'block' : 'none';
+});
+</script>
+{% endblock %}

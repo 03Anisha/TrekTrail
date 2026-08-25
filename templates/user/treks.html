@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Browse Treks - TrekManager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Browse Treks</h2>
+    <p>Find and book your next adventure</p>
+</div>
+
+<div class="search-bar">
+    <form method="GET" class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label form-label-small">Search</label>
+            <input type="text" name="search" class="form-control" placeholder="Trek name or location" value="{{ search }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label form-label-small">Difficulty</label>
+            <select name="difficulty" class="form-select">
+                <option value="">All Difficulties</option>
+                {% for d in ['Easy', 'Moderate', 'Hard'] %}
+                <option value="{{ d }}" {{ 'selected' if difficulty == d }}>{{ d }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label form-label-small">Location</label>
+            <input type="text" name="location" class="form-control" placeholder="Filter by location" value="{{ location }}">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+        <div class="col-md-1">
+            <a href="{{ url_for('user_treks') }}" class="btn btn-outline-secondary w-100">Clear</a>
+        </div>
+    </form>
+</div>
+
+{% if treks %}
+<div class="row g-4">
+    {% for trek in treks %}
+    <div class="col-md-6 col-lg-4">
+        <div class="trek-card">
+            <div class="trek-card-header">
+                <h5>{{ trek.name }}</h5>
+                <div class="text-muted-small mt-2">{{ trek.location }}</div>
+            </div>
+            <div class="trek-card-body">
+                <div class="trek-meta">Difficulty:
+                    <span class="status-badge badge-difficulty-{{ trek.difficulty | lower }}">{{ trek.difficulty }}</span>
+                </div>
+                <div class="trek-meta">Duration: <span>{{ trek.duration }} days</span></div>
+                <div class="trek-meta">Dates: <span>{{ trek.start_date }} to {{ trek.end_date }}</span></div>
+                <div class="trek-meta">Slots Available: <span>{{ trek.available_slots }}</span></div>
+                <div class="trek-meta">Price: <span>INR {{ trek.price }}</span></div>
+                {% if trek.staff_name %}
+                <div class="trek-meta">Guide: <span>{{ trek.staff_name }}</span></div>
+                {% endif %}
+                {% if trek.description %}
+                <p class="detail-description">
+                    {{ trek.description[:120] }}{% if trek.description | length > 120 %}...{% endif %}
+                </p>
+                {% endif %}
+                <div class="slots-bar mt-2">
+                    {% set pct = ((trek.total_slots - trek.available_slots) / trek.total_slots * 100) | int if trek.total_slots > 0 else 0 %}
+                    <div class="slots-fill {{ 'low' if pct > 80 else 'medium' if pct > 50 else '' }}"
+                         style="width: {{ pct }}%"></div>
+                </div>
+            </div>
+            <div class="trek-card-footer">
+                {% if trek.id in booked_ids %}
+                    <button class="btn btn-sm btn-outline-secondary w-100" disabled>Already Booked</button>
+                {% elif trek.available_slots <= 0 %}
+                    <button class="btn btn-sm btn-outline-danger w-100" disabled>Fully Booked</button>
+                {% else %}
+                    <a href="{{ url_for('user_book_trek', trek_id=trek.id) }}" class="btn btn-sm btn-orange w-100">Book Trek</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="content-card">
+    <div class="empty-state">
+        <p>No treks match your search criteria. Try adjusting the filters.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

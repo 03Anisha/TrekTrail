@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Login - TrekManager{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-box">
+        <div class="auth-title">Sign In</div>
+        <div class="auth-subtitle">Access your TrekManager account</div>
+
+        <form method="POST" novalidate>
+            <div class="mb-3">
+                <label class="form-label">Role</label>
+                <select name="role" class="form-select" required>
+                    <option value="user">Trekker (User)</option>
+                    <option value="staff">Trek Staff</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email / Username</label>
+                <input type="text" name="email" class="form-control" placeholder="Enter your email or username" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-orange w-100">Sign In</button>
+        </form>
+
+        <div class="auth-divider">Don't have an account?</div>
+        <a href="{{ url_for('register') }}" class="btn btn-outline-secondary w-100">Create Account</a>
+    </div>
+</div>
+{% endblock %}

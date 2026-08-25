@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}All Bookings - TrekManager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>All Bookings</h2>
+    <p>Complete booking history across all treks</p>
+</div>
+
+<div class="content-card">
+    <div class="card-body-pad p-0">
+        {% if bookings %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>User</th>
+                    <th>Trek</th>
+                    <th>Location</th>
+                    <th>Booking Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in bookings %}
+                <tr>
+                    <td>#{{ b.id }}</td>
+                    <td>{{ b.user_name }}</td>
+                    <td>{{ b.trek_name }}</td>
+                    <td>{{ b.location }}</td>
+                    <td>{{ b.booking_date[:16] }}</td>
+                    <td><span class="status-badge status-{{ b.status }}">{{ b.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state"><p>No bookings recorded yet.</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

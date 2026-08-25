@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - TrekManager{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-start">
+    <div>
+        <h2>Admin Dashboard</h2>
+        <p>Overview of the trekking management system</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="stat-card blue">
+            <div class="stat-label">Total Treks</div>
+            <div class="stat-value">{{ stats.treks }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="stat-card green">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-value">{{ stats.users }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="stat-card teal">
+            <div class="stat-label">Total Staff</div>
+            <div class="stat-value">{{ stats.staff }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="stat-card orange">
+            <div class="stat-label">Bookings</div>
+            <div class="stat-value">{{ stats.bookings }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="stat-card red">
+            <div class="stat-label">Pending Staff</div>
+            <div class="stat-value">{{ stats.pending_staff }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="stat-card purple">
+            <div class="stat-label">Pending Treks</div>
+            <div class="stat-value">{{ stats.pending_treks }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="content-card">
+            <div class="card-header-bar">Recent Bookings</div>
+            <div class="card-body-pad p-0">
+                {% if recent_bookings %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Trek</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in recent_bookings %}
+                        <tr>
+                            <td>#{{ b.id }}</td>
+                            <td>{{ b.user_name }}</td>
+                            <td>{{ b.trek_name }}</td>
+                            <td>{{ b.booking_date[:10] }}</td>
+                            <td><span class="status-badge status-{{ b.status }}">{{ b.status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state"><p>No bookings yet.</p></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="content-card">
+            <div class="card-header-bar">Quick Actions</div>
+            <div class="card-body-pad">
+                <a href="{{ url_for('admin_add_trek') }}" class="btn btn-orange w-100 mb-2">Add New Trek</a>
+                <a href="{{ url_for('admin_staff') }}" class="btn btn-primary w-100 mb-2">
+                    Manage Staff
+                    {% if stats.pending_staff > 0 %}
+                        <span class="badge bg-danger ms-1">{{ stats.pending_staff }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('admin_treks') }}" class="btn btn-outline-secondary w-100 mb-2">View All Treks</a>
+                <a href="{{ url_for('admin_users') }}" class="btn btn-outline-secondary w-100 mb-2">View All Users</a>
+                <a href="{{ url_for('admin_bookings') }}" class="btn btn-outline-secondary w-100">View All Bookings</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

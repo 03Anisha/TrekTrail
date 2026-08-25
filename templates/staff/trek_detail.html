@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{{ trek.name }} - Staff View{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-start">
+    <div>
+        <h2>{{ trek.name }}</h2>
+        <p>{{ trek.location }} &mdash; {{ trek.difficulty }} &mdash; {{ trek.duration }} days</p>
+    </div>
+    <a href="{{ url_for('staff_dashboard') }}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="content-card">
+            <div class="card-header-bar">Trek Details</div>
+            <div class="card-body-pad">
+                <div class="trek-meta">Status: <span><span class="status-badge status-{{ trek.status }}">{{ trek.status }}</span></span></div>
+                <div class="trek-meta">Start Date: <span>{{ trek.start_date or 'TBD' }}</span></div>
+                <div class="trek-meta">End Date: <span>{{ trek.end_date or 'TBD' }}</span></div>
+                <div class="trek-meta">Available Slots: <span>{{ trek.available_slots }} / {{ trek.total_slots }}</span></div>
+                <div class="trek-meta">Price: <span>INR {{ trek.price }}</span></div>
+                {% if trek.description %}
+                <hr class="my-3">
+                <p class="detail-description">{{ trek.description }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="content-card">
+            <div class="card-header-bar">Update Trek</div>
+            <div class="card-body-pad">
+                <form method="POST" action="{{ url_for('staff_update_trek', id=trek.id) }}" class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label">Available Slots</label>
+                        <input type="number" name="available_slots" class="form-control"
+                               value="{{ trek.available_slots }}" min="0" max="{{ trek.total_slots }}">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Trek Status</label>
+                        <select name="status" class="form-select">
+                            {% for s in ['pending', 'approved', 'open', 'closed', 'completed'] %}
+                            <option value="{{ s }}" {{ 'selected' if trek.status == s }}>{{ s | capitalize }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-orange w-100">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="card-header-bar">Registered Participants ({{ participants | length }})</div>
+    <div class="card-body-pad p-0">
+        {% if participants %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Emergency Contact</th>
+                    <th>Booking Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in participants %}
+                <tr>
+                    <td><strong>{{ p.name }}</strong></td>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.phone or '—' }}</td>
+                    <td>{{ p.emergency_contact or '—' }}</td>
+                    <td>{{ p.booking_date[:10] }}</td>
+                    <td><span class="status-badge status-{{ p.status }}">{{ p.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state"><p>No participants have booked this trek yet.</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

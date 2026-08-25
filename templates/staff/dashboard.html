@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Staff Dashboard - TrekManager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Staff Dashboard</h2>
+    <p>Your assigned treks and participant management</p>
+</div>
+
+{% if treks %}
+<div class="row g-4">
+    {% for trek in treks %}
+    <div class="col-md-6 col-lg-4">
+        <div class="trek-card">
+            <div class="trek-card-header">
+                <h5>{{ trek.name }}</h5>
+                <div class="text-muted-small mt-2">{{ trek.location }}</div>
+            </div>
+            <div class="trek-card-body">
+                <div class="trek-meta">Difficulty: <span>{{ trek.difficulty }}</span></div>
+                <div class="trek-meta">Duration: <span>{{ trek.duration }} days</span></div>
+                <div class="trek-meta">Start: <span>{{ trek.start_date or 'TBD' }}</span></div>
+                <div class="trek-meta">End: <span>{{ trek.end_date or 'TBD' }}</span></div>
+                <div class="trek-meta">Participants Booked: <span>{{ trek.booked_count }}</span></div>
+                <div class="trek-meta">Available Slots: <span>{{ trek.available_slots }} / {{ trek.total_slots }}</span></div>
+                <div class="slots-bar mt-2">
+                    {% set pct = ((trek.total_slots - trek.available_slots) / trek.total_slots * 100) | int if trek.total_slots > 0 else 0 %}
+                    <div class="slots-fill {{ 'low' if pct > 80 else 'medium' if pct > 50 else '' }}"
+                         style="width: {{ pct }}%"></div>
+                </div>
+            </div>
+            <div class="trek-card-footer d-flex justify-content-between align-items-center">
+                <span class="status-badge status-{{ trek.status | lower }}">{{ trek.status }}</span>
+                <a href="{{ url_for('staff_trek_detail', id=trek.id) }}" class="btn btn-sm btn-primary">Manage</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="content-card">
+    <div class="empty-state">
+        <p>No treks have been assigned to you yet. Please wait for the admin to assign a trek.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

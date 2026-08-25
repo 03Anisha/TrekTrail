@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Manage Staff - TrekManager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Trek Staff</h2>
+    <p>Approve registrations, assign treks, and manage staff accounts</p>
+</div>
+
+<div class="search-bar">
+    <form method="GET" class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label form-label-small">Search</label>
+            <input type="text" name="search" class="form-control" placeholder="Search by name or ID" value="{{ search }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ url_for('admin_staff') }}" class="btn btn-outline-secondary w-100">Clear</a>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="card-body-pad p-0">
+        {% if staff %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Experience</th>
+                    <th>Approval</th>
+                    <th>Status</th>
+                    <th>Registered</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in staff %}
+                <tr>
+                    <td>#{{ s.id }}</td>
+                    <td><strong>{{ s.name }}</strong></td>
+                    <td>{{ s.email }}</td>
+                    <td>{{ s.phone or '—' }}</td>
+                    <td class="text-ellipsis">
+                        {{ s.experience or '—' }}
+                    </td>
+                    <td><span class="status-badge status-{{ s.approval_status }}">{{ s.approval_status }}</span></td>
+                    <td><span class="status-badge status-{{ s.status }}">{{ s.status }}</span></td>
+                    <td>{{ s.registered_at[:10] }}</td>
+                    <td class="action-btns">
+                        {% if s.approval_status == 'pending' %}
+                            <a href="{{ url_for('admin_approve_staff', id=s.id) }}" class="btn btn-sm btn-success">Approve</a>
+                            <a href="{{ url_for('admin_reject_staff', id=s.id) }}" class="btn btn-sm btn-danger">Reject</a>
+                        {% endif %}
+                        {% if s.status == 'active' %}
+                            <a href="{{ url_for('admin_blacklist_staff', id=s.id) }}" class="btn btn-sm btn-warning">Blacklist</a>
+                        {% else %}
+                            <a href="{{ url_for('admin_activate_staff', id=s.id) }}" class="btn btn-sm btn-success">Activate</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state"><p>No staff members found.</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

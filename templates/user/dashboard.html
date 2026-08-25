@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - TrekManager{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-start">
+    <div>
+        <h2>Welcome, {{ session.name }}</h2>
+        <p>Your trekking overview and booking history</p>
+    </div>
+    <a href="{{ url_for('user_treks') }}" class="btn btn-orange">Browse Treks</a>
+</div>
+
+<div class="mb-4">
+    <div class="section-title">Available Treks</div>
+    {% if open_treks %}
+    <div class="row g-3">
+        {% for trek in open_treks %}
+        <div class="col-md-6 col-lg-4">
+            <div class="trek-card">
+                <div class="trek-card-header">
+                    <h5>{{ trek.name }}</h5>
+                    <div class="text-muted-small mt-2">{{ trek.location }}</div>
+                </div>
+                <div class="trek-card-body">
+                    <div class="trek-meta">Difficulty:
+                        <span class="status-badge badge-difficulty-{{ trek.difficulty | lower }}">{{ trek.difficulty }}</span>
+                    </div>
+                    <div class="trek-meta">Duration: <span>{{ trek.duration }} days</span></div>
+                    <div class="trek-meta">Dates: <span>{{ trek.start_date }} to {{ trek.end_date }}</span></div>
+                    <div class="trek-meta">Slots Left: <span>{{ trek.available_slots }}</span></div>
+                    <div class="trek-meta">Price: <span>INR {{ trek.price }}</span></div>
+                    {% if trek.staff_name %}
+                    <div class="trek-meta">Guide: <span>{{ trek.staff_name }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="trek-card-footer">
+                    <a href="{{ url_for('user_book_trek', trek_id=trek.id) }}" class="btn btn-sm btn-orange w-100">Book Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="content-card">
+        <div class="empty-state"><p>No open treks available at the moment. Check back soon.</p></div>
+    </div>
+    {% endif %}
+</div>
+
+<div>
+    <div class="section-title">My Bookings</div>
+    {% if my_bookings %}
+    <div class="content-card">
+        <div class="card-body-pad p-0">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Trek</th>
+                        <th>Location</th>
+                        <th>Difficulty</th>
+                        <th>Dates</th>
+                        <th>Trek Status</th>
+                        <th>Booking Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in my_bookings %}
+                    <tr>
+                        <td>#{{ b.id }}</td>
+                        <td><strong>{{ b.trek_name }}</strong></td>
+                        <td>{{ b.location }}</td>
+                        <td><span class="status-badge badge-difficulty-{{ b.difficulty | lower }}">{{ b.difficulty }}</span></td>
+                        <td class="nowrap">{{ b.start_date }} &mdash; {{ b.end_date }}</td>
+                        <td><span class="status-badge status-{{ b.trek_status | lower }}">{{ b.trek_status }}</span></td>
+                        <td><span class="status-badge status-{{ b.status }}">{{ b.status }}</span></td>
+                        <td>
+                            {% if b.status == 'booked' and b.trek_status in ['open', 'approved', 'pending'] %}
+                            <a href="{{ url_for('user_cancel_booking', booking_id=b.id) }}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Cancel this booking?')">Cancel</a>
+                            {% else %}
+                            <span class="text-muted-small">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="content-card">
+        <div class="empty-state">
+            <p>You have not booked any treks yet. <a href="{{ url_for('user_treks') }}">Browse available treks.</a></p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}TrekManager - Adventure Management System{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container hero-inner">
+        <h1>Manage Every <span class="hero-accent">Trek</span> with Precision</h1>
+        <p>A centralized platform for trek organizers, staff, and participants to coordinate seamlessly.</p>
+        <a href="{{ url_for('register') }}" class="btn btn-orange btn-lg me-2">Get Started</a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">Sign In</a>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-block">
+                <h5>Admin Control</h5>
+                <p>Full oversight of treks, staff, and participants. Approve registrations, assign staff, and monitor all bookings from one dashboard.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-block">
+                <h5>Staff Management</h5>
+                <p>Trek staff can view their assigned treks, manage participant lists, update slot availability, and mark trek progress.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-block">
+                <h5>Easy Booking</h5>
+                <p>Trekkers can browse available treks, filter by difficulty and location, book instantly, and track their history.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
