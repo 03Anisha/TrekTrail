@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TrekTrail — Trekking Management Application
 
 A role-based web application (Admin, Trek Staff, Trekker) for managing trekking activities: trek creation and approval, staff assignment, slot-based bookings, and trekking history — built with Flask, Jinja2, and SQLite.
@@ -52,3 +53,7 @@ trekking_app/
 ## Notes
 
 This project was built as part of the IIT Madras Modern Application Development coursework. It later evolved into a decoupled Flask REST API + Vue.js SPA version with Redis caching and Celery background jobs — see [TrekTrail Pro](#) for that iteration.
+=======
+# TrekTrail
+project python with flask api
+>>>>>>> 803b59ca61694c84eee35874773151ec4c4e2fb3
